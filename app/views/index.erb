@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>List of Shows</title>
+  </head>
+
 <h1>List of Shows</h1>
+  <body>
+    <% if @tv %>
+      <% @tv.each do |show| %>
+      <li>
+        <%=show[0]%> <%="(#{show[1]})"%>
+      </li>
+      <%end%>
+    <%end%>
+  </body>
+  <h4><% flash.each do |key, value| %>
+    <div class="flash flash-<%= key %>">
+    <%= value %>
+  </div>
+  <% end %>
+  </h4>
+
+<form action='/television_shows' method="post">
+  <label for="Title">Title:</label>
+  <input type="text" name="Title" value="">
+
+  <label for="Network">Network:</label>
+  <input type="text" name="Network" value="">
+
+  <label for="Starting Year">Starting Year:</label>
+  <input type="text" name="Starting Year" value="">
+
+  <label for="Synopsis">Synopsis:</label>
+  <input type="text" name="Synopsis" value="">
+  <label for="Genre">Genre:</label>
+  <select id='Genre' name=Genre>
+    <option value="Action">Action</option>
+    <option value="Mystery">Mystery</option>
+    <option value="Drama">Drama</option>
+    <option value="Comedy">Comedy</option>
+    <option value="Fantasy">Fantasy</option>
+  </select>
+  <!-- <label for="Genre">Synopsis:</label>
+  <input type="text" name="Synopsis" value=""> need to figure out how to select genre-->
+  <button type ="submit"> Add TV Show </button>
+</form>
