@@ -8,6 +8,16 @@ enable :sessions
 set :bind, '0.0.0.0'  # bind to all interfaces
 set :views, File.join(File.dirname(__FILE__), "app/views")
 
+def alread_exist?
+  tv = CSV.read('television-shows.csv', headers: true)
+  tv.each do |show|
+    if show[0] == @title
+      return true
+    end
+  end
+  return false
+end
+
 get '/' do
   redirect "/television_shows"
   erb :index
@@ -24,34 +34,32 @@ get '/television_shows/new' do
 end
 
 post '/television_shows' do
-  attr_reader :title, :network
-  @tv = CSV.read('television-shows.csv', headers: true)
-
   @title = params["Title"]
   @network = params["Network"]
   @starting_year = params["Starting Year"]
   @synopsis = params["Synopsis"]
-  # how to select from GENRES? use .include? do i store it?
-  # @genre = params["Genre"]#GENRES.select #GENRES.include?()
-  if @tv.
-    if @title == ""
-      flash[:error]="Please fill in all required fields"
-      redirect '/television_shows'
-    elsif @network == ""
-      flash[:error]="Please fill in all required fields"
-      redirect '/television_shows'
-    elsif @starting_year == ""
-      flash[:error]="Please fill in all required fields"
-      redirect '/television_shows'
-    elsif @synopsis == ""
-      flash[:error]="Please fill in all required fields"
-      redirect '/television_shows'
-    else
-      CSV.open('television-shows.csv', 'a') do |show|
-        show << [@title,@network,@starting_year,@synopsis,@genre]
-      end
+  @genre = params["Genre"]
+  #could create methods for this
+  if @title == ""
+    flash[:error]="Please fill in all required fields"
     redirect '/television_shows'
+  elsif @network == ""
+    flash[:error]="Please fill in all required fields"
+    redirect '/television_shows'
+  elsif @starting_year == ""
+    flash[:error]="Please fill in all required fields"
+    redirect '/television_shows'
+  elsif @synopsis == ""
+    flash[:error]="Please fill in all required fields"
+    redirect '/television_shows'
+  elsif alread_exist?
+    flash[:error]="That shows already added"
+    redirect '/television_shows'
+  else
+    CSV.open('television-shows.csv', 'a') do |show|
+      show << [@title,@network,@starting_year,@synopsis,@genre]
     end
+    redirect '/television_shows'
   end
   erb :index
 end
